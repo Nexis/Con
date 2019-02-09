@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        contractionsList = new ArrayList<Contraction>();
+        contractionsList = new ArrayList<>();
 
         arrayAdapter = new ContractionListAdapter(this, contractionsList);
 

@@ -12,10 +12,10 @@ import android.widget.TextView;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class ContractionListAdapter extends ArrayAdapter<Contraction> {
+class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
-    private static DateTimeFormatter contracionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
-    private Context context;
+    private static final DateTimeFormatter contractionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
+    private final Context context;
 
     public ContractionListAdapter(Context context, List<Contraction> objects) {
         super(context, 0, objects);
@@ -37,8 +37,8 @@ public class ContractionListAdapter extends ArrayAdapter<Contraction> {
         TextView timeBetween = convertView.findViewById(R.id.time_between);
 
 
-        start.setText(contraction.getStart().format(contracionTimeFormat));
-        stop.setText(contraction.getStop().format(contracionTimeFormat));
+        start.setText(contraction.getStart().format(contractionTimeFormat));
+        stop.setText(contraction.getStop().format(contractionTimeFormat));
 
         String durationAsText = context.getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis() / 1000);
         duration.setText(durationAsText);
@@ -48,8 +48,4 @@ public class ContractionListAdapter extends ArrayAdapter<Contraction> {
         return convertView;
     }
 
-    @Override
-    public int getCount() {
-        return super.getCount();
-    }
 }
