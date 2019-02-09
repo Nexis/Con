@@ -16,7 +16,7 @@ class Contraction {
     private LocalTime stop;
     private Duration duration;
 
-    private static DateTimeFormatter contracionDurationTimeFormat=DateTimeFormatter.ofPattern("mm : ss");
+    private static DateTimeFormatter contracionDurationTimeFormat = DateTimeFormatter.ofPattern("mm : ss");
 
     public Contraction() {
         date = Calendar.getInstance().getTime();

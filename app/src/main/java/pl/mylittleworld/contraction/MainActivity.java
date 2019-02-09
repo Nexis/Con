@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Contraction> contractionsList;
-    private Contraction currentContraction=null;
+    private Contraction currentContraction = null;
     private ArrayAdapter arrayAdapter;
 
     @Override
@@ -19,23 +19,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        contractionsList=new ArrayList<Contraction>();
+        contractionsList = new ArrayList<Contraction>();
 
-        arrayAdapter=new ContractionListAdapter(this,contractionsList);
+        arrayAdapter = new ContractionListAdapter(this, contractionsList);
 
-        ((ListView)findViewById(R.id.contraction_list)).setAdapter(arrayAdapter);
+        ((ListView) findViewById(R.id.contraction_list)).setAdapter(arrayAdapter);
 
         findViewById(R.id.contraction_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentContraction==null){
-                    currentContraction= new Contraction();
+                if (currentContraction == null) {
+                    currentContraction = new Contraction();
                     currentContraction.startContraction();
-                }
-                else {
+                } else {
                     currentContraction.stopContraction();
                     contractionsList.add(currentContraction);
-                    currentContraction=null;
+                    currentContraction = null;
                     arrayAdapter.notifyDataSetChanged();
                 }
             }

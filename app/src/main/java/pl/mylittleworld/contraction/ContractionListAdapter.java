@@ -14,12 +14,12 @@ import java.util.List;
 
 public class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
-    private static DateTimeFormatter contracionTimeFormat=DateTimeFormatter.ofPattern("kk: mm : ss");
+    private static DateTimeFormatter contracionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
     private Context context;
 
     public ContractionListAdapter(Context context, List<Contraction> objects) {
-        super(context,0, objects);
-        this.context=context;
+        super(context, 0, objects);
+        this.context = context;
     }
 
     @NonNull
@@ -40,7 +40,7 @@ public class ContractionListAdapter extends ArrayAdapter<Contraction> {
         start.setText(contraction.getStart().format(contracionTimeFormat));
         stop.setText(contraction.getStop().format(contracionTimeFormat));
 
-        String durationAsText = context.getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis()/1000);
+        String durationAsText = context.getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis() / 1000);
         duration.setText(durationAsText);
         date.setText(contraction.getDate().toString());
 
