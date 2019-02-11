@@ -15,11 +15,9 @@ import java.util.List;
 class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
     private static final DateTimeFormatter contractionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
-    private final Context context;
 
-    public ContractionListAdapter(Context context, List<Contraction> objects) {
+    public ContractionListAdapter(@NonNull Context context, List<Contraction> objects) {
         super(context, 0, objects);
-        this.context = context;
     }
 
     @NonNull
@@ -27,25 +25,30 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         Contraction contraction = getItem(position);
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.contraction_row, parent, false);
+
+        if(contraction!=null) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.contraction_row, parent, false);
+            }
+            TextView start = convertView.findViewById(R.id.start);
+            TextView stop = convertView.findViewById(R.id.stop);
+            TextView duration = convertView.findViewById(R.id.duration);
+            TextView date = convertView.findViewById(R.id.date);
+            TextView timeBetween = convertView.findViewById(R.id.time_between);
+
+
+            start.setText(contraction.getStart().format(contractionTimeFormat));
+            stop.setText(contraction.getStop().format(contractionTimeFormat));
+
+            String durationAsText = getContext().getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis() / 1000);
+            duration.setText(durationAsText);
+            date.setText(contraction.getDate().toString());
+
+
+            return convertView;
         }
-        TextView start = convertView.findViewById(R.id.start);
-        TextView stop = convertView.findViewById(R.id.stop);
-        TextView duration = convertView.findViewById(R.id.duration);
-        TextView date = convertView.findViewById(R.id.date);
-        TextView timeBetween = convertView.findViewById(R.id.time_between);
-
-
-        start.setText(contraction.getStart().format(contractionTimeFormat));
-        stop.setText(contraction.getStop().format(contractionTimeFormat));
-
-        String durationAsText = context.getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis() / 1000);
-        duration.setText(durationAsText);
-        date.setText(contraction.getDate().toString());
-
-
-        return convertView;
+        return super.getView(position, convertView, parent);
     }
+
 
 }

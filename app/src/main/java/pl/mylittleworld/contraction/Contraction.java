@@ -1,6 +1,9 @@
 package pl.mylittleworld.contraction;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +12,7 @@ import java.util.Date;
 
 class Contraction {
 
+    @NonNull
     private final Date date;
     private LocalTime start;
     private LocalTime stop;
@@ -25,6 +29,9 @@ class Contraction {
     }
 
     public void stopContraction() {
+        if (start == null) {
+            throw new IllegalStateException("Trying to stop contraction which is already not started");
+        }
         stop = LocalTime.now();
         duration = Duration.between(start, stop);
     }
@@ -33,14 +40,17 @@ class Contraction {
         return date;
     }
 
+    @Nullable
     public LocalTime getStart() {
         return start;
     }
 
+    @Nullable
     public LocalTime getStop() {
         return stop;
     }
 
+    @Nullable
     public Duration getDuration() {
         return duration;
     }
