@@ -2,6 +2,7 @@ package pl.mylittleworld.contraction.database;
 
 import android.arch.persistence.room.TypeConverter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -13,17 +14,17 @@ public class Converter {
     }
 
     @TypeConverter
-    public LocalTime secondsToLocalTime(int seconds){
+    public LocalTime secondsToLocalTime(int seconds) {
         return LocalTime.ofSecondOfDay(seconds);
     }
 
     @TypeConverter
-    public long dataToLong(Date date){
-        return date.getTime();
+    public long dataToLong(LocalDate date) {
+        return date.toEpochDay();
     }
 
     @TypeConverter
-    public Date longToDate(long millis){
-        return new Date(millis);
+    public LocalDate longToDate(long millis) {
+        return LocalDate.ofEpochDay(millis);
     }
 }

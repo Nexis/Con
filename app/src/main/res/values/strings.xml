@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Contraction</string>
     <string name="duration">DURATION: %1$d m %2$d s</string>
+    <string name="between">BETWEEN: %1$d m %2$d s</string>
     <string name="contraction">CONTRACTION</string>
 </resources>

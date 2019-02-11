@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,13 +19,13 @@ public class Contraction {
     private int id;
 
     @NonNull
-    private Date date;
+    private LocalDate date;
     private LocalTime start;
     private LocalTime stop;
 
 
     public Contraction() {
-        date = Calendar.getInstance().getTime();
+        date = LocalDate.now();
     }
 
     public void startContraction() {
@@ -38,7 +39,7 @@ public class Contraction {
         stop = LocalTime.now();
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -61,7 +62,7 @@ public class Contraction {
         }
     }
 
-    public void setDate(Date date){
+    public void setDate(LocalDate date){
         this.date=date;
     }
     public void setStart(LocalTime start) {

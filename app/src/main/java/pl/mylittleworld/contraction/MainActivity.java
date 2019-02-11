@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
                     dataAccessor.addContraction(currentContraction);
                     currentContraction = null;
                     arrayAdapter.notifyDataSetChanged();
-                    dataAccessor.getAllContractions(MainActivity.this);
                 }
             }
         });

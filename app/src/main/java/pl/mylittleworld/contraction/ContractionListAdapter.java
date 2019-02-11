@@ -9,14 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+
 
 import pl.mylittleworld.contraction.database.Contraction;
 
 class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
     private static final DateTimeFormatter contractionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
+    private static final DateTimeFormatter dataTimeFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public ContractionListAdapter(@NonNull Context context, List<Contraction> objects) {
         super(context, 0, objects);
@@ -42,14 +47,34 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
             start.setText(contraction.getStart().format(contractionTimeFormat));
             stop.setText(contraction.getStop().format(contractionTimeFormat));
 
-            String durationAsText = getContext().getString(R.string.duration, contraction.getDuration().toMinutes(), contraction.getDuration().toMillis() / 1000);
-            duration.setText(durationAsText);
-            date.setText(contraction.getDate().toString());
+            String durationAsText = getDurationString(R.string.duration,contraction.getDuration().getSeconds()/60,contraction.getDuration().getSeconds()%60);
+                    duration.setText(durationAsText);
+            date.setText(dataTimeFormat.format(contraction.getDate()));
+
+            if(getCount()>position+1){
+                LocalTime start1=contraction.getStart();
+               LocalTime start2=(getItem(position+1)).getStart();
+               Duration between=Duration.between(start1,start2);
+
+                timeBetween.setText(getDurationString(R.string.between,between.getSeconds()/60,between.getSeconds()%60));
+            }
+
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    return false;
+                }
+            });
 
 
             return convertView;
         }
         return super.getView(position, convertView, parent);
+    }
+    private String getDurationString(int id,long minutes,long seconds){
+        return getContext().getString(id, minutes,seconds);
+
     }
 
 
