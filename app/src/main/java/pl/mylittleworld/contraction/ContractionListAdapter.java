@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import pl.mylittleworld.contraction.database.Contraction;
+
 class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
     private static final DateTimeFormatter contractionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");

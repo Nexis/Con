@@ -8,16 +8,23 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import pl.mylittleworld.contraction.database.Contraction;
+import pl.mylittleworld.contraction.database.DataBaseAccessor;
+
+public class MainActivity extends AppCompatActivity implements DataAccessor.DataAccessListener {
 
     private ArrayList<Contraction> contractionsList;
     private Contraction currentContraction = null;
     private ArrayAdapter arrayAdapter;
+    private DataAccessor dataAccessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dataAccessor=new DataBaseAccessor(this);
+        dataAccessor.getAllContractions(this);
 
         contractionsList = new ArrayList<>();
 
@@ -34,11 +41,18 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     currentContraction.stopContraction();
                     contractionsList.add(currentContraction);
+                    dataAccessor.addContraction(currentContraction);
                     currentContraction = null;
                     arrayAdapter.notifyDataSetChanged();
+                    dataAccessor.getAllContractions(MainActivity.this);
                 }
             }
         });
     }
 
+    @Override
+    public void onActionDone(ArrayList<Contraction> contractions) {
+        contractionsList.addAll(contractions);
+        arrayAdapter.notifyDataSetChanged();
+    }
 }

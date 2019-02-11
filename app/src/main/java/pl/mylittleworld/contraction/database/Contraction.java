@@ -1,24 +1,27 @@
-package pl.mylittleworld.contraction;
+package pl.mylittleworld.contraction.database;
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-class Contraction {
+@Entity
+public class Contraction {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
     @NonNull
-    private final Date date;
+    private Date date;
     private LocalTime start;
     private LocalTime stop;
-    private Duration duration;
 
-    private static DateTimeFormatter contractionDurationTimeFormat = DateTimeFormatter.ofPattern("mm : ss");
 
     public Contraction() {
         date = Calendar.getInstance().getTime();
@@ -33,7 +36,6 @@ class Contraction {
             throw new IllegalStateException("Trying to stop contraction which is already not started");
         }
         stop = LocalTime.now();
-        duration = Duration.between(start, stop);
     }
 
     public Date getDate() {
@@ -50,10 +52,31 @@ class Contraction {
         return stop;
     }
 
-    @Nullable
     public Duration getDuration() {
-        return duration;
+        if (start != null && stop != null) {
+            return Duration.between(start, stop);
+
+        } else {
+            return null;
+        }
     }
 
+    public void setDate(Date date){
+        this.date=date;
+    }
+    public void setStart(LocalTime start) {
+        this.start = start;
+    }
 
+    public void setStop(LocalTime stop) {
+        this.stop = stop;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
