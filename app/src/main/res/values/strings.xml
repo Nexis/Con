@@ -3,4 +3,7 @@
     <string name="duration">DURATION: %1$d m %2$d s</string>
     <string name="between">BETWEEN: %1$d m %2$d s</string>
     <string name="contraction">CONTRACTION</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="restart">RESTART</string>
 </resources>

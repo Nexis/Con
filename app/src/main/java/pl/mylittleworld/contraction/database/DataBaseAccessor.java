@@ -4,8 +4,6 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
 import pl.mylittleworld.contraction.DataAccessor;
