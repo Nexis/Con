@@ -4,89 +4,144 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import pl.mylittleworld.contraction.DataAccessor;
 
 public class DataBaseAccessor implements DataAccessor {
 
-    public static DataBase dataBase;
+    private static DataBase dataBase;
+    private static ArrayList<AsyncTask<Void,Void,Void>> queue= new ArrayList<>();
+    private static boolean running=false;
 
     public DataBaseAccessor(@NonNull Context context) {
         dataBase = Room.databaseBuilder(context, DataBase.class, "ContractionDatabase").build();
     }
 
+    private void addToQueue(AsyncTask asyncTask) {
+        queue.add(asyncTask);
+        doTasks();
+    }
+    private static void taskDone(AsyncTask asyncTask) {
+        queue.remove(asyncTask);
+        running=false;
+        doTasks();
+    }
+
+
+    private static void doTasks() {
+        if (queue.size() > 0 && !running) {
+            running=true;
+            queue.get(0).execute();
+        }
+    }
 
     @Override
     public void addContraction(Contraction contraction) {
-        new AddTask().execute(contraction);
+        new AddTask(contraction).execute();
     }
 
     @Override
     public void deleteContraction(Contraction contraction) {
-        new DeleteTask().execute(contraction);
+        addToQueue(new DeleteTask(contraction));
     }
 
     @Override
     public void updateContraction(Contraction contraction) {
-        new UpdateTask().execute(contraction);
+        addToQueue(new UpdateTask(contraction));
     }
 
     @Override
     public void getAllContractions(DataAccessListener dataAccessListener) {
-        new GetAllContractionsTask().execute(dataAccessListener);
+        addToQueue(new GetAllContractionsTask(dataAccessListener));
     }
 
-    private static class AddTask extends AsyncTask<Contraction, Void, Void> {
+    private static class AddTask extends AsyncTask<Void, Void, Void> {
+
+        private Contraction contraction;
+
+        AddTask(Contraction contraction) {
+            this.contraction = contraction;
+        }
 
         @Override
-        protected Void doInBackground(Contraction... contraction) {
+        protected Void doInBackground(Void... voids) {
             dataBase.getDao().insert(contraction);
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            taskDone(this);
+        }
     }
 
-    private static class UpdateTask extends AsyncTask<Contraction, Void, Void> {
+    private static class UpdateTask extends AsyncTask<Void, Void, Void> {
+
+        private Contraction contraction;
+
+        UpdateTask(Contraction contraction) {
+            this.contraction = contraction;
+        }
 
         @Override
-        protected Void doInBackground(Contraction... contraction) {
+        protected Void doInBackground(Void... voids) {
             dataBase.getDao().update(contraction);
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            taskDone(this);
+        }
     }
 
-    private static class DeleteTask extends AsyncTask<Contraction, Void, Void> {
+    private static class DeleteTask extends AsyncTask<Void, Void, Void> {
+
+
+        private Contraction contraction;
+
+        DeleteTask(Contraction contraction) {
+            this.contraction = contraction;
+        }
 
         @Override
-        protected Void doInBackground(Contraction... contraction) {
+        protected Void doInBackground(Void... voids) {
             dataBase.getDao().delete(contraction);
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            taskDone(this);
+        }
     }
 
-    private static class GetAllContractionsTask extends AsyncTask<DataAccessListener, Void, ArrayList<Contraction>> {
+    private static class GetAllContractionsTask extends AsyncTask<Void, Void, Void>{
 
-        private List<DataAccessListener> dataAccessListeners;
+        private DataAccessListener dataAccessListeners;
+        private ArrayList<Contraction> contractions;
 
-        @Override
-        protected ArrayList<Contraction> doInBackground(DataAccessListener... listeners) {
-            dataAccessListeners=new ArrayList<>();
-            Collections.addAll(dataAccessListeners,listeners);
-           return new ArrayList<>(dataBase.getDao().getAllContractions());
+        GetAllContractionsTask(DataAccessListener dataAccessListener) {
+            this.dataAccessListeners = dataAccessListener;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Contraction> contractions) {
-            super.onPostExecute(contractions);
-            for(DataAccessListener listener: dataAccessListeners){
-                listener.onActionDone(contractions);
-            }
+        protected Void doInBackground(Void... voids) {
+
+            contractions= new ArrayList<>(dataBase.getDao().getAllContractions());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void  aVoid) {
+            dataAccessListeners.onActionDone(contractions);
+            taskDone(this);
 
         }
     }
