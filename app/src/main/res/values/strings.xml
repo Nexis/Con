@@ -6,4 +6,12 @@
     <string name="start">START</string>
     <string name="stop">STOP</string>
     <string name="restart">RESTART</string>
+    <string name="in_list_start">START: </string>
+    <string name="in_list_stop">STOP: </string>
+    <string name="hospital_info">About contractions</string>
+    <string name="app_info">About this app</string>
+    <string name="ok">OK</string>
+    <string name="hospital">You have to go to hospital when contractions are strong and appears...</string>
+
+
 </resources>
