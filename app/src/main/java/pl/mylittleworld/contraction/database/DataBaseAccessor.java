@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import pl.mylittleworld.contraction.DataAccessor;
@@ -11,27 +12,28 @@ import pl.mylittleworld.contraction.DataAccessor;
 public class DataBaseAccessor implements DataAccessor {
 
     private static DataBase dataBase;
-    private static ArrayList<AsyncTask<Void,Void,Void>> queue= new ArrayList<>();
-    private static boolean running=false;
+    private static final ArrayList<AsyncTask<Void, Void, Void>> queue = new ArrayList<>();
+    private static boolean running = false;
 
     public DataBaseAccessor(@NonNull Context context) {
         dataBase = Room.databaseBuilder(context, DataBase.class, "ContractionDatabase").build();
     }
 
-    private void addToQueue(AsyncTask asyncTask) {
+    private void addToQueue(AsyncTask<Void, Void, Void> asyncTask) {
         queue.add(asyncTask);
         doTasks();
     }
+
     private static void taskDone(AsyncTask asyncTask) {
         queue.remove(asyncTask);
-        running=false;
+        running = false;
         doTasks();
     }
 
 
     private static void doTasks() {
         if (queue.size() > 0 && !running) {
-            running=true;
+            running = true;
             queue.get(0).execute();
         }
     }
@@ -58,7 +60,7 @@ public class DataBaseAccessor implements DataAccessor {
 
     private static class AddTask extends AsyncTask<Void, Void, Void> {
 
-        private Contraction contraction;
+        private final Contraction contraction;
 
         AddTask(Contraction contraction) {
             this.contraction = contraction;
@@ -79,7 +81,7 @@ public class DataBaseAccessor implements DataAccessor {
 
     private static class UpdateTask extends AsyncTask<Void, Void, Void> {
 
-        private Contraction contraction;
+        private final Contraction contraction;
 
         UpdateTask(Contraction contraction) {
             this.contraction = contraction;
@@ -101,7 +103,7 @@ public class DataBaseAccessor implements DataAccessor {
     private static class DeleteTask extends AsyncTask<Void, Void, Void> {
 
 
-        private Contraction contraction;
+        private final Contraction contraction;
 
         DeleteTask(Contraction contraction) {
             this.contraction = contraction;
@@ -120,9 +122,9 @@ public class DataBaseAccessor implements DataAccessor {
         }
     }
 
-    private static class GetAllContractionsTask extends AsyncTask<Void, Void, Void>{
+    private static class GetAllContractionsTask extends AsyncTask<Void, Void, Void> {
 
-        private DataAccessListener dataAccessListeners;
+        private final DataAccessListener dataAccessListeners;
         private ArrayList<Contraction> contractions;
 
         GetAllContractionsTask(DataAccessListener dataAccessListener) {
@@ -132,12 +134,12 @@ public class DataBaseAccessor implements DataAccessor {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            contractions= new ArrayList<>(dataBase.getDao().getAllContractions());
+            contractions = new ArrayList<>(dataBase.getDao().getAllContractions());
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void  aVoid) {
+        protected void onPostExecute(Void aVoid) {
             dataAccessListeners.onActionDone(contractions);
             taskDone(this);
 

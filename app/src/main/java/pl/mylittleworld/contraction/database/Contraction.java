@@ -4,13 +4,10 @@ package pl.mylittleworld.contraction.database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Date;
 
 @Entity
 public class Contraction {
@@ -39,18 +36,26 @@ public class Contraction {
         stop = LocalTime.now();
     }
 
+    @NonNull
     public LocalDate getDate() {
         return date;
     }
 
-    @Nullable
+
     public LocalTime getStart() {
-        return start;
+        if (start == null) {
+            throw new RuntimeException("Try to access not initialized variable");
+        } else {
+            return start;
+        }
     }
 
-    @Nullable
     public LocalTime getStop() {
-        return stop;
+        if (stop == null) {
+            throw new RuntimeException("Try to access not initialized variable");
+        } else {
+            return stop;
+        }
     }
 
     public Duration getDuration() {
@@ -58,13 +63,14 @@ public class Contraction {
             return Duration.between(start, stop);
 
         } else {
-            return null;
+            throw new RuntimeException("Try to access when start or stop variable is not initialized");
         }
     }
 
-    public void setDate(LocalDate date){
-        this.date=date;
+    public void setDate(@NonNull LocalDate date) {
+        this.date = date;
     }
+
     public void setStart(LocalTime start) {
         this.start = start;
     }

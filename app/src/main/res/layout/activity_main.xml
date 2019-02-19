@@ -26,7 +26,8 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="@color/colorPrimary"
-            android:src="@drawable/ic_replay_black_24dp" />
+            android:src="@drawable/ic_replay_black_24dp"
+            android:contentDescription="@string/restart"/>
 
         <Button
             android:id="@+id/contraction_button"

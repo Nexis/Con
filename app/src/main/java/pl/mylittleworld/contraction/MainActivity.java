@@ -1,8 +1,8 @@
 package pl.mylittleworld.contraction;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,14 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import pl.mylittleworld.contraction.database.Contraction;
 import pl.mylittleworld.contraction.database.DataBaseAccessor;
 
-public class MainActivity extends AppCompatActivity implements DataAccessor.DataAccessListener, Control{
+public class MainActivity extends AppCompatActivity implements DataAccessor.DataAccessListener, Control {
 
     private ArrayList<Contraction> contractionsList;
     private Contraction currentContraction = null;
@@ -32,21 +31,22 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataAccessor=new DataBaseAccessor(this);
+        dataAccessor = new DataBaseAccessor(this);
         dataAccessor.getAllContractions(this);
 
         contractionsList = new ArrayList<>();
 
-        arrayAdapter = new ContractionListAdapter(this,this, contractionsList);
+        arrayAdapter = new ContractionListAdapter(this, this, contractionsList);
 
         ((ListView) findViewById(R.id.contraction_list)).setAdapter(arrayAdapter);
 
-        restart= findViewById(R.id.restart);
+        restart = findViewById(R.id.restart);
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentContraction=contractionsList.get(contractionsList.size()-1);
+                currentContraction = contractionsList.get(contractionsList.size() - 1);
                 contractionsList.remove(currentContraction);
+                dataAccessor.deleteContraction(currentContraction);
                 arrayAdapter.notifyDataSetChanged();
                 restart.setEnabled(false);
                 restart.setBackgroundColor(getColor(R.color.notEnable));
@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
             }
         });
 
-        contractionButton=findViewById(R.id.contraction_button);
+        contractionButton = findViewById(R.id.contraction_button);
         contractionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (currentContraction == null) {
                     currentContraction = new Contraction();
                     currentContraction.startContraction();
-                   contractionButton.setText(R.string.stop);
+                    contractionButton.setText(R.string.stop);
                     restart.setEnabled(false);
                     restart.setBackgroundColor(getColor(R.color.notEnable));
 
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
 
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -89,20 +90,21 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.hospital_info:
-                Intent intent=new Intent(this,InfoActivity.class);
+                Intent intent = new Intent(this, InfoActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.app_info:
 
-               return true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void onActionDone(ArrayList<Contraction> contractions) {
         contractionsList.addAll(contractions);

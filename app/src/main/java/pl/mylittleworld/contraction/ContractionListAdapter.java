@@ -53,11 +53,15 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
             date.setText(dataTimeFormat.format(contraction.getDate()));
 
             if (getCount() > position + 1) {
-                LocalTime start1 = contraction.getStart();
-                LocalTime start2 = (getItem(position + 1)).getStart();
-                Duration between = Duration.between(start1, start2);
+                Contraction nextContraction = getItem(position + 1);
 
-                timeBetween.setText(getDurationString(R.string.between, between.getSeconds() / 60, between.getSeconds() % 60));
+                if (nextContraction!=null && contraction.getDate().equals(nextContraction.getDate())) {
+                    LocalTime start1 = contraction.getStart();
+                    LocalTime start2 = nextContraction.getStart();
+                    Duration between = Duration.between(start1, start2);
+
+                    timeBetween.setText(getDurationString(R.string.between, between.getSeconds() / 60, between.getSeconds() % 60));
+                }
             }
 
             convertView.setOnLongClickListener(new View.OnLongClickListener() {

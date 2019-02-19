@@ -4,7 +4,6 @@ import android.arch.persistence.room.TypeConverter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 public class Converter {
 
