@@ -67,7 +67,7 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
                 if (nextContraction != null) {
 
-                    LocalTime start1 = contraction.getStart();
+                    LocalTime start1 = contraction.getStop();
                     LocalTime start2 = nextContraction.getStart();
                     Duration between;
                     if (contraction.getDate().equals(nextContraction.getDate())) {
