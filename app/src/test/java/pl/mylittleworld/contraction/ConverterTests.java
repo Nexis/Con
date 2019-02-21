@@ -11,32 +11,32 @@ import static org.junit.Assert.*;
 
 public class ConverterTests {
 
-    private final Converter converter= new Converter();
+    private final Converter converter = new Converter();
 
     @Test
     public void conversionOfLocalTime() {
 
-        LocalTime localTime1= LocalTime.now();
+        LocalTime localTime1 = LocalTime.now();
 
-       int temp= converter.localTimeToSeconds(localTime1);
+        int temp = converter.localTimeToSeconds(localTime1);
 
-       LocalTime localTime2= converter.secondsToLocalTime(temp);
+        LocalTime localTime2 = converter.secondsToLocalTime(temp);
 
-        assertEquals(localTime1.getHour(),localTime2.getHour());
-        assertEquals(localTime1.getMinute(),localTime2.getMinute());
-        assertEquals(localTime1.getSecond(),localTime2.getSecond());
+        assertEquals(localTime1.getHour(), localTime2.getHour());
+        assertEquals(localTime1.getMinute(), localTime2.getMinute());
+        assertEquals(localTime1.getSecond(), localTime2.getSecond());
     }
 
     @Test
     public void conversionOfLocalDate() {
 
-        LocalDate localDate1= LocalDate.now();
+        LocalDate localDate1 = LocalDate.now();
 
-        long temp= converter.dataToLong(localDate1);
+        long temp = converter.dataToLong(localDate1);
 
-        LocalDate localDate2= converter.longToDate(temp);
+        LocalDate localDate2 = converter.longToDate(temp);
 
-        assertEquals(localDate1,localDate2);
+        assertEquals(localDate1, localDate2);
 
     }
 }

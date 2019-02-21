@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import pl.mylittleworld.contraction.DataAccessor;
@@ -40,7 +41,7 @@ public class DataBaseAccessor implements DataAccessor {
 
     @Override
     public void addContraction(Contraction contraction) {
-        new AddTask(contraction).execute();
+        addToQueue(new AddTask(contraction));
     }
 
     @Override
@@ -124,11 +125,11 @@ public class DataBaseAccessor implements DataAccessor {
 
     private static class GetAllContractionsTask extends AsyncTask<Void, Void, Void> {
 
-        private final DataAccessListener dataAccessListeners;
+        private WeakReference<DataAccessListener> dataAccessListenerW;
         private ArrayList<Contraction> contractions;
 
         GetAllContractionsTask(DataAccessListener dataAccessListener) {
-            this.dataAccessListeners = dataAccessListener;
+            dataAccessListenerW = new WeakReference<>(dataAccessListener);
         }
 
         @Override
@@ -140,7 +141,10 @@ public class DataBaseAccessor implements DataAccessor {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            dataAccessListeners.onActionDone(contractions);
+            DataAccessListener dataAccessListener=dataAccessListenerW.get();
+            if(dataAccessListener!=null) {
+                dataAccessListener.onActionDone(contractions);
+            }
             taskDone(this);
 
         }

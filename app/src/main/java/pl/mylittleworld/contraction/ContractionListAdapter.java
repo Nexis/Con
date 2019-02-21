@@ -7,11 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 
@@ -19,13 +23,18 @@ import pl.mylittleworld.contraction.database.Contraction;
 
 class ContractionListAdapter extends ArrayAdapter<Contraction> {
 
+    @NonNull
     private final Control control;
     private static final DateTimeFormatter contractionTimeFormat = DateTimeFormatter.ofPattern("kk: mm : ss");
     private static final DateTimeFormatter dataTimeFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    public ContractionListAdapter(@NonNull Context context, @NonNull Control control, List<Contraction> objects) {
+    ContractionListAdapter(@NonNull Context context, @NonNull Control control, List<Contraction> objects) {
         super(context, 0, objects);
-        this.control = control;
+        if (control != null) {
+            this.control = control;
+        } else {
+            throw new IllegalArgumentException("Control cannot be null");
+        }
     }
 
     @NonNull
@@ -43,6 +52,7 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
             TextView duration = convertView.findViewById(R.id.duration);
             TextView date = convertView.findViewById(R.id.date);
             TextView timeBetween = convertView.findViewById(R.id.time_between);
+            ImageView divider = convertView.findViewById(R.id.divider);
 
 
             start.setText(contraction.getStart().format(contractionTimeFormat));
@@ -55,12 +65,24 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
             if (getCount() > position + 1) {
                 Contraction nextContraction = getItem(position + 1);
 
-                if (nextContraction!=null && contraction.getDate().equals(nextContraction.getDate())) {
+                if (nextContraction != null) {
+
                     LocalTime start1 = contraction.getStart();
                     LocalTime start2 = nextContraction.getStart();
-                    Duration between = Duration.between(start1, start2);
+                    Duration between;
+                    if (contraction.getDate().equals(nextContraction.getDate())) {
+                        between = Duration.between(start1, start2);
+                        timeBetween.setText(getDurationString(R.string.between, between.getSeconds() / 60, between.getSeconds() % 60));
+                        divider.setVisibility(View.GONE);
+                    } else if (isNextDate(contraction.getDate(), nextContraction.getDate())) {
+                        between = Duration.between(start1, LocalTime.MAX);
+                        between.plus(Duration.between(LocalTime.MIDNIGHT, start2));
+                        timeBetween.setText(getDurationString(R.string.between, between.getSeconds() / 60, between.getSeconds() % 60));
+                        divider.setVisibility(View.VISIBLE);
+                    } else {
+                        divider.setVisibility(View.VISIBLE);
+                    }
 
-                    timeBetween.setText(getDurationString(R.string.between, between.getSeconds() / 60, between.getSeconds() % 60));
                 }
             }
 
@@ -76,6 +98,22 @@ class ContractionListAdapter extends ArrayAdapter<Contraction> {
             return convertView;
         }
         return super.getView(position, convertView, parent);
+    }
+
+    static boolean isNextDate(LocalDate date1, LocalDate date2) {
+        if (date1.getDayOfYear() + 1 == date2.getDayOfYear()) {
+            return true;
+            //December and January
+        } else if (date1.getMonthValue() == 12 && date2.getMonthValue() == 1) {
+            //31th and 1st
+            if (date1.getDayOfMonth() == 31 && date2.getDayOfMonth() == 1) {
+                //year1 +1 == year2
+                if (date1.getYear() + 1 == date2.getYear()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String getDurationString(int id, long minutes, long seconds) {

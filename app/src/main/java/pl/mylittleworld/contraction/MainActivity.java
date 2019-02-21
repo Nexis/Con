@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements DataAccessor.Data
 
     @Override
     public void onActionDone(ArrayList<Contraction> contractions) {
+        if (isFinishing() || isDestroyed()) return;
         contractionsList.addAll(contractions);
         arrayAdapter.notifyDataSetChanged();
     }
