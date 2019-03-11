@@ -9,3 +9,4 @@ android:
     
 script:
   - ./gradlew assembleDebug
+  - ./gradlew test
